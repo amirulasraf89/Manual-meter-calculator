@@ -313,7 +313,7 @@ function kiraError() {
     let actualSeconds = elapsed / 1000;
 
     // Error % Formula: |(Actual Time - Reference Time) / Reference Time| * 100
-    let error = Math.abs((actualSeconds - referenceTime) / actualSeconds) * 100;
+    let error = Math.abs((referenceTime - actualSecond) / actualSeconds) * 100;
 
     // Tentukan warna berdasarkan % error (Contoh: >2% = Merah)
     let errorColor = error > 2 ? 'red' : 'green';
