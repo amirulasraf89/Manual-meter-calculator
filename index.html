@@ -237,6 +237,7 @@
 
 <script>
 let referenceTime = null; // masa rujukan dari kiraan atas
+let elapsed = 0; // Tempoh masa yang telah berlalu (dalam milisaat)
 
 function kira() {
     let pf = parseFloat(document.getElementById("pf").value);
@@ -249,6 +250,7 @@ function kira() {
     }
 
     // Formula: 15000 / (pf * konstan * amp)
+    // 15000 adalah contoh nombor putaran untuk ujian (berdasarkan 3000 rev/kWh dan 5kW beban/1000)
     let result = 15000 / (pf * konstan * amp);
 
     referenceTime = result;  // simpan masa rujukan automatik
@@ -262,7 +264,6 @@ function kira() {
 /* STOPWATCH JAVASCRIPT                */
 /* ------------------------------------------------------- */
 let startTime = 0;
-let elapsed = 0;
 let timer;
 let isRunning = false; // Status untuk elak 'start' berkali-kali
 
@@ -312,11 +313,19 @@ function kiraError() {
 
     let actualSeconds = elapsed / 1000;
 
-    // Error % Formula: |(Actual Time - Reference Time) / Reference Time| * 100
-    let error = Math.abs((referenceTime - actualSecond) / actualSeconds) * 100;
+    if (actualSeconds === 0) {
+        document.getElementById("errorResult").innerHTML =
+            "❌ Masa sebenar adalah 0. Sila jalankan stopwatch.";
+        return;
+    }
 
-    // Tentukan warna berdasarkan % error (Contoh: >2% = Merah)
-    let errorColor = error > 2 ? 'red' : 'green';
+    // Error % Formula: ((Reference Time - Actual Time) / Actual Time) * 100
+    // +ve: Meter Cepat (masa sebenar < rujukan), -ve: Meter Lambat (masa sebenar > rujukan)
+    let error = ((referenceTime - actualSeconds) / actualSeconds) * 100;
+
+    // Tentukan warna berdasarkan % error (Contoh: > +/- 2% = Merah/Gagal)
+    let isErrorHigh = Math.abs(error) > 2;
+    let errorColor = isErrorHigh ? 'red' : 'green';
 
     document.getElementById("errorResult").innerHTML =
         `<span style="color: ${errorColor}; font-weight: bold; font-size: 1.5rem;">Error: ${error.toFixed(3)}%</span> <br><br>` +
