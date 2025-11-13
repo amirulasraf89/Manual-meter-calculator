@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Ujian Meter (Reka Bentuk Terkini)</title>
+<style>
+    /* ---------------------- */
+    /* GENERAL STYLES & FONT */
+    /* ---------------------- */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f7f6; /* Warna latar belakang lembut */
+        color: #333;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* ---------------------- */
+    /* CONTAINER & CARDS */
+    /* ---------------------- */
+    .container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        max-width: 1200px;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .card {
+        background-color: #ffffff;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Bayangan lembut */
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    /* ---------------------- */
+    /* TYPOGRAPHY */
+    /* ---------------------- */
+    h2 {
+        color: #007bff; /* Warna biru primer */
+        border-bottom: 2px solid #e0e0e0;
+        padding-bottom: 10px;
+        margin-top: 0;
+        font-weight: 600;
+        font-size: 1.5rem;
+    }
+
+    h3 {
+        color: #555;
+        margin-top: 25px;
+        font-size: 1.2rem;
+    }
+
+    /* ---------------------- */
+    /* INPUT & SELECT STYLES */
+    /* ---------------------- */
+    label {
+        display: block;
+        margin-top: 15px;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #555;
+    }
+
+    select, input[type="number"] {
+        width: 100%;
+        padding: 12px;
+        margin: 5px 0 15px 0;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-sizing: border-box; /* Penting untuk padding yang betul */
+        font-size: 1rem;
+        transition: border-color 0.3s;
+        background-color: #f9f9f9;
+    }
+
+    select:focus, input[type="number"]:focus {
+        border-color: #007bff;
+        outline: none;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+    }
+
+    /* ---------------------- */
+    /* BUTTON STYLES */
+    /* ---------------------- */
+    button {
+        padding: 12px 20px;
+        margin: 5px 10px 5px 0;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: background-color 0.3s, transform 0.1s;
+    }
+
+    /* Primary (Kira) Button */
+    button.primary {
+        background-color: #007bff;
+        color: white;
+    }
+    button.primary:hover {
+        background-color: #0056b3;
+    }
+
+    /* Stopwatch Control Buttons */
+    #stopwatchSection button {
+        background-color: #6c757d; /* Warna kelabu standard */
+        color: white;
+    }
+    #stopwatchSection button.start {
+        background-color: #28a745; /* Hijau */
+    }
+    #stopwatchSection button.start:hover {
+        background-color: #1e7e34;
+    }
+    #stopwatchSection button.stop {
+        background-color: #dc3545; /* Merah */
+    }
+    #stopwatchSection button.stop:hover {
+        background-color: #bd2130;
+    }
+    #stopwatchSection button.reset {
+        background-color: #ffc107; /* Kuning (untuk reset) */
+        color: #333;
+    }
+    #stopwatchSection button.reset:hover {
+        background-color: #e0a800;
+    }
+    #stopwatchSection button.error {
+        background-color: #17a2b8; /* Biru muda (Kira Error) */
+        color: white;
+        margin-top: 15px;
+    }
+    #stopwatchSection button.error:hover {
+        background-color: #117a8b;
+    }
+
+    button:active {
+        transform: scale(0.98);
+    }
+
+    /* ---------------------- */
+    /* DISPLAY & RESULT STYLES */
+    /* ---------------------- */
+    #hasil, #errorResult {
+        background-color: #e9ecef;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 15px;
+        font-size: 1.1rem;
+        color: #212529;
+        white-space: pre-wrap; /* Memastikan baris baru dihormati */
+    }
+
+    #stopwatchDisplay {
+        font-size: 3rem; /* Lebih besar untuk jam randik */
+        font-weight: 700;
+        color: #007bff;
+        margin: 20px 0;
+        background-color: #f1f8ff;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #007bff;
+        text-align: center;
+        width: 90%;
+        letter-spacing: 2px;
+    }
+
+    hr {
+        border: 0;
+        height: 1px;
+        background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+        margin: 40px 0;
+    }
+</style>
+</head>
+<body>
+
+<h1>🧮 Kalkulator Ujian Meter (Relay)</h1>
+
+<div class="container">
+    <div class="card" id="calculatorSection">
+        <h2>⏱️ Kalkulator Masa Rujukan Ujian Meter</h2>
+
+        <label for="pf">Power Factor (pf):</label>
+        <select id="pf">
+            <option value="1">1</option>
+            <option value="0.85">0.85</option>
+        </select>
+
+        <label for="konstan">Konstan (Meter Constant):</label>
+        <select id="konstan">
+            <option value="300">300</option>
+            <option value="333.3">333.3</option>
+            <option value="375">375</option>
+            <option value="500">500</option>
+            <option value="800">800</option>
+            <option value="1000">1000</option>
+        </select>
+
+        <label for="amp">Amp (I):</label>
+        <input type="number" id="amp" placeholder="Masukkan nilai Amp" step="any">
+
+        <button onclick="kira()" class="primary">Kira Masa Rujukan</button>
+
+        <h3>Keputusan:</h3>
+        <div id="hasil">—</div>
+    </div>
+
+    <div class="card" id="stopwatchSection">
+        <h2>🛑 Stopwatch & Kiraan Error</h2>
+
+        <div id="stopwatchDisplay">00:00.000</div>
+
+        <div class="button-group">
+            <button onclick="startWatch()" class="start">Start</button>
+            <button onclick="stopWatch()" class="stop">Stop</button>
+            <button onclick="resetWatch()" class="reset">Reset</button>
+        </div>
+
+        <button onclick="kiraError()" class="error">Kira Error %</button>
+
+        <h3>Keputusan Error:</h3>
+        <div id="errorResult">—</div>
+    </div>
+</div>
+
+<script>
+let referenceTime = null; // masa rujukan dari kiraan atas
+
+function kira() {
+    let pf = parseFloat(document.getElementById("pf").value);
+    let konstan = parseFloat(document.getElementById("konstan").value);
+    let amp = parseFloat(document.getElementById("amp").value);
+
+    if (!amp || amp <= 0) {
+        document.getElementById("hasil").innerHTML = "Sila masukkan Amp yang sah.";
+        return;
+    }
+
+    // Formula: 15000 / (pf * konstan * amp)
+    let result = 15000 / (pf * konstan * amp);
+
+    referenceTime = result;  // simpan masa rujukan automatik
+
+    document.getElementById("hasil").innerHTML = 
+        `**${result.toFixed(6)}** saat (Masa Rujukan)<br><br>` +
+        `Formula: 15000 / (${pf} × ${konstan} × ${amp})`;
+}
+
+/* ------------------------------------------------------- */
+/* STOPWATCH JAVASCRIPT                */
+/* ------------------------------------------------------- */
+let startTime = 0;
+let elapsed = 0;
+let timer;
+let isRunning = false; // Status untuk elak 'start' berkali-kali
+
+function updateDisplay() {
+    let time = elapsed;
+
+    let minutes = Math.floor(time / 60000);
+    let seconds = Math.floor((time % 60000) / 1000);
+    let ms = time % 1000;
+
+    document.getElementById("stopwatchDisplay").innerText =
+        `${String(minutes).padStart(2, '0')}:` +
+        `${String(seconds).padStart(2, '0')}.` +
+        `${String(ms).padStart(3, '0')}`;
+}
+
+function startWatch() {
+    if (isRunning) return; // Elak start jika dah running
+    isRunning = true;
+    startTime = Date.now() - elapsed;
+    timer = setInterval(function () {
+        elapsed = Date.now() - startTime;
+        updateDisplay();
+    }, 10);
+}
+
+function stopWatch() {
+    clearInterval(timer);
+    isRunning = false;
+}
+
+function resetWatch() {
+    clearInterval(timer);
+    isRunning = false;
+    elapsed = 0;
+    updateDisplay();
+}
+
+function kiraError() {
+    stopWatch(); // Berhenti jam randik sebelum kira error
+
+    if (referenceTime === null) {
+        document.getElementById("errorResult").innerHTML =
+            "❌ Sila kira formula di atas dahulu — tiada masa rujukan.";
+        return;
+    }
+
+    let actualSeconds = elapsed / 1000;
+
+    // Error % Formula: |(Actual Time - Reference Time) / Reference Time| * 100
+    let error = Math.abs((actualSeconds - referenceTime) / referenceTime) * 100;
+
+    // Tentukan warna berdasarkan % error (Contoh: >2% = Merah)
+    let errorColor = error > 2 ? 'red' : 'green';
+
+    document.getElementById("errorResult").innerHTML =
+        `<span style="color: ${errorColor}; font-weight: bold; font-size: 1.5rem;">Error: ${error.toFixed(3)}%</span> <br><br>` +
+        `Masa sebenar (Stopwatch): ${actualSeconds.toFixed(3)}s<br>` +
+        `Masa rujukan (Kalkulator): ${referenceTime.toFixed(6)}s`;
+}
+
+// Set paparan awal jam randik
+document.addEventListener('DOMContentLoaded', updateDisplay);
+
+</script>
+
+</body>
+</html>
